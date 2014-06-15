@@ -1,0 +1,28 @@
+{
+  "name": "gitStars",
+  "main": [
+    "/dist/gstars.min.js",
+    "/dist/gstars.min.css"
+  ],
+  "version": "0.1.0",
+  "description": "TODO",
+  "authors": [
+    "Chunpeng Wen <wcp1231@gmail.com>"
+  ],
+  "ignore": [
+    "**/.*",
+    "package.json",
+    "klei.json",
+    "gulpfile.js",
+    "node_modules",
+    "bower_components",
+    "src"
+  ],
+  "dependencies": {
+    "angular": "~1.2.14",
+    "angular-route": "~1.2.14"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.2.14"
+  }
+}
