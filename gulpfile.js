@@ -20,16 +20,25 @@ var htmlminOpts = {
 };
 
 /**
+ * CoffeeScript
+ */
+gulp.task('coffee', function () {
+  return gulp.src([
+    './src/app/**/*.coffee'
+  ])
+    .pipe(g.coffee())
+    .pipe(gulp.dest('./.tmp/src/app'))
+    .pipe(g.cached('build-coffee'))
+    .pipe(livereload());
+});
+
+/**
  * JS Hint
  */
-gulp.task('jshint', function () {
-  return gulp.src([
-    './gulpfile.js',
-    './src/app/**/*.js'
-  ])
+gulp.task('jshint', ['coffee'], function () {
+  return jsFiles()
     .pipe(g.cached('jshint'))
-    .pipe(jshint('./.jshintrc'))
-    .pipe(livereload());
+    .pipe(jshint('./.jshintrc'));
 });
 
 /**
@@ -59,17 +68,6 @@ gulp.task('csslint', ['styles'], function () {
     .pipe(g.cached('csslint'))
     .pipe(g.csslint('./.csslintrc'))
     .pipe(g.csslint.reporter());
-});
-
-/**
- * CoffeeScript
- */
-gulp.task('coffee', function () {
-  return gulp.src([
-    './src/app/**/*.coffee'
-  ])
-    .pipe(g.coffee())
-    .pipe(gulp.dest('./.tmp/src/app'));
 });
 
 /**
@@ -153,7 +151,7 @@ gulp.task('watch', ['statics', 'default'], function () {
   isWatching = true;
   // Initiate livereload server:
   g.livereload();
-  gulp.watch('./src/app/**/*.js', ['jshint']).on('change', function (evt) {
+  gulp.watch('./src/app/**/*.coffee', ['jshint']).on('change', function (evt) {
     if (evt.type !== 'changed') {
       gulp.start('index');
     }
@@ -215,6 +213,13 @@ function testFiles() {
     .queue(appFiles())
     .queue(gulp.src(['./src/app/**/*_test.js', './.tmp/src/app/**/*_test.js']))
     .done();
+}
+
+/**
+ * All Js files as a stream
+ */
+function jsFiles(opt) {
+  return gulp.src('./.tmp/src/app/**/*.js', opt);
 }
 
 /**
