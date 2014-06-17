@@ -1,4 +1,5 @@
+'use strict'
 angular.module('gitStars', [
   'ngRoute'
-  'gstars-templates'
+  'gitStars-templates'
 ])
