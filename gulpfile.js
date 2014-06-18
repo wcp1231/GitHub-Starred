@@ -107,10 +107,11 @@ gulp.task('build-all', ['styles', 'templates', 'coffee'], index);
 
 function index () {
   var opt = {read: false};
-  return gulp.src('./src/app/index.html')
+  return gulp.src('./src/app/index.jade')
     .pipe(g.inject(g.bowerFiles(opt), {ignorePath: 'bower_components', starttag: '<!-- inject:vendor:{{ext}} -->'}))
     .pipe(g.inject(es.merge(appFiles(), cssFiles(opt)), {ignorePath: ['.tmp', 'src/app']}))
     .pipe(gulp.dest('./src/app/'))
+    .pipe(g.jade())
     .pipe(g.embedlr())
     .pipe(gulp.dest('./.tmp/'))
     .pipe(livereload());
@@ -128,7 +129,8 @@ gulp.task('assets', function () {
  * Dist
  */
 gulp.task('dist', ['vendors', 'assets', 'styles-dist', 'scripts-dist'], function () {
-  return gulp.src('./src/app/index.html')
+  return gulp.src('./src/app/index.jade')
+    .pipe(g.jade())
     .pipe(g.inject(gulp.src('./dist/vendors.min.{js,css}'), {ignorePath: 'dist', starttag: '<!-- inject:vendor:{{ext}} -->'}))
     .pipe(g.inject(gulp.src('./dist/' + bower.name + '.min.{js,css}'), {ignorePath: 'dist'}))
     .pipe(g.htmlmin(htmlminOpts))
@@ -156,8 +158,8 @@ gulp.task('watch', ['statics', 'default'], function () {
       gulp.start('index');
     }
   });
-  gulp.watch('./src/app/index.html', ['index']);
-  gulp.watch(['./src/app/**/*.jade', '!./src/app/index.html'], ['templates']);
+  gulp.watch('./src/app/index.jade', ['index']);
+  gulp.watch(['./src/app/**/*.jade', '!./src/app/index.jade'], ['templates']);
   gulp.watch(['./src/app/**/*.styl'], ['csslint']).on('change', function (evt) {
     if (evt.type !== 'changed') {
       gulp.start('index');
@@ -248,7 +250,7 @@ function appFiles () {
  * All AngularJS templates/partials as a stream
  */
 function templateFiles (opt) {
-  return gulp.src(['./src/app/**/*.jade', '!./src/app/index.html'], opt)
+  return gulp.src(['./src/app/**/*.jade', '!./src/app/index.jade'], opt)
     .pipe(g.jade())
     .pipe(opt && opt.min ? g.htmlmin(htmlminOpts) : noop());
 }
