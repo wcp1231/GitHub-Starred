@@ -29,6 +29,26 @@ html(ng-app="gitStars")
               strong.vcard-stat-count 40
               | following
       .col-md-3.middle
+        .sort-bar
+        ul.repo-list
+          - for(var x = 0; x < 7; x++)
+            li.repo.source
+              span.mega-octicon.octicon-repo
+              h3
+                a(href="https://github.com/sofish/pen") sofish/pen
+              span.sort-info
+                | Starred
+                time on 28 Apr
+              p.description enjoy live editing (+markdown)
+            li.repo.fork
+              span.mega-octicon.octicon-repo
+              h3
+                a(href="https://github.com/elm-lang/Elm") elm-lang/Elm
+              span.sort-info
+                | Starred
+                time 29 days ago
+              p.description Compiler for the Elm programming language. Elm aims to make web development more pleasant. Elm is a type-safe, functional reactive language that compiles to HTML, CSS, and JavaScript.
+
       .col-md-7.main
     // inject:vendor:js
     <script src="/angular/angular.js"></script>
