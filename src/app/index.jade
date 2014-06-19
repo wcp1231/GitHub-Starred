@@ -12,6 +12,22 @@ html(ng-app="gitStars")
   body
     .row
       .col-md-2.aside
+        .vcard
+          a.vcard-avatar(href="#")
+            img.img-rounded(src="https://avatars2.githubusercontent.com/u/2058684?s=460", height="230", width="230")
+          h1.vcard-names
+            span.vcard-fullname Chunpeng Wen
+            span.vcard-username wcp1231
+          .vcard-stats
+            a.vcard-stat(href="#")
+              strong.vcard-stat-count 11
+              | followers
+            a.vcard-stat(href="#")
+              strong.vcard-stat-count 455
+              | starred
+            a.vcard-stat(href="#")
+              strong.vcard-stat-count 40
+              | following
       .col-md-3.middle
       .col-md-7.main
     // inject:vendor:js
