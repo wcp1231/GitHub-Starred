@@ -17,7 +17,7 @@ app.get '/user', (req, response) ->
     response.send _.pick(res, 'id', 'avatar_url', 'html_url', 'name', 'login')
 
 
-app.get '/starred', (req, response) ->
+app.get '/repo', (req, response) ->
   github.repos.getStarredFromUser {user: 'wcp1231'}, (err, res) ->
     response.send _.map(res, (item) ->
       _.pick(item, 'id', 'full_name', 'description', 'html_url')
