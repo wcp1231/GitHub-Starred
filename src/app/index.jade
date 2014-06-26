@@ -9,15 +9,15 @@ html(ng-app="gitStars")
     // inject:css
     <link rel="stylesheet" href="/css/app.css">
     // endinject
-  body
+  body(ng-controller="rootCtrl")
     .row
       .col-md-2.aside
         .vcard
           a.vcard-avatar(href="#")
-            img.img-rounded(src="https://avatars2.githubusercontent.com/u/2058684?s=460", height="230", width="230")
+            img.img-rounded(src="{{ user.avatar }}", height="230", width="230")
           h1.vcard-names
-            span.vcard-fullname Chunpeng Wen
-            span.vcard-username wcp1231
+            span.vcard-fullname {{ user.fullname }}
+            span.vcard-username {{ user.username }}
       .col-md-3.middle
         .sort-bar
         ul.repo-list
@@ -47,8 +47,8 @@ html(ng-app="gitStars")
     <script src="/bootstrap/dist/js/bootstrap.js"></script>
     // endinject
     // inject:js
-    <script src="/controllers/rootCtrl.js"></script>
+    <script src="/src/app/controllers/rootCtrl.js"></script>
     <script src="/gitStars-templates.js"></script>
-    <script src="/app.js"></script>
-    <script src="/route.js"></script>
+    <script src="/src/app/app.js"></script>
+    <script src="/src/app/route.js"></script>
     // endinject
