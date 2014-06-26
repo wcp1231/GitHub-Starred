@@ -27,7 +27,7 @@ gulp.task('coffee', function () {
     './src/app/**/*.coffee'
   ])
     .pipe(g.coffee())
-    .pipe(gulp.dest('./.tmp/src/app'))
+    .pipe(gulp.dest('./.tmp/public/src/app'))
     .pipe(g.cached('build-coffee'))
     .pipe(livereload());
 });
@@ -45,7 +45,7 @@ gulp.task('jshint', ['coffee'], function () {
  * CSS
  */
 gulp.task('clean-css', function () {
-  return gulp.src('./.tmp/css').pipe(g.clean());
+  return gulp.src('./.tmp/public/css').pipe(g.clean());
 });
 
 gulp.task('styles', ['clean-css'], function () {
@@ -54,7 +54,7 @@ gulp.task('styles', ['clean-css'], function () {
     '!./src/app/**/_*.styl'
   ])
     .pipe(g.stylus({use: [require('nib')()]}))
-    .pipe(gulp.dest('./.tmp/css/'))
+    .pipe(gulp.dest('./.tmp/public/css/'))
     .pipe(g.cached('built-css'))
     .pipe(livereload());
 });
@@ -108,12 +108,20 @@ gulp.task('build-all', ['styles', 'templates', 'coffee'], index);
 function index () {
   var opt = {read: false};
   return gulp.src('./src/app/index.jade')
-    .pipe(g.inject(g.bowerFiles(opt), {ignorePath: 'bower_components', starttag: '<!-- inject:vendor:{{ext}} -->'}))
-    .pipe(g.inject(es.merge(appFiles(), cssFiles(opt)), {ignorePath: ['.tmp', 'src/app']}))
+    .pipe(g.inject(g.bowerFiles(opt), {
+      ignorePath: 'bower_components',
+      starttag: '// inject:vendor:{{ext}}',
+      endtag: '// endinject'
+    }))
+    .pipe(g.inject(es.merge(appFiles(), cssFiles(opt)), {
+      ignorePath: ['.tmp', 'public'],
+      starttag: '// inject:{{ext}}',
+      endtag: '// endinject'
+    }))
     .pipe(gulp.dest('./src/app/'))
     .pipe(g.jade())
     .pipe(g.embedlr())
-    .pipe(gulp.dest('./.tmp/'))
+    .pipe(gulp.dest('./.tmp/public/'))
     .pipe(livereload());
 }
 
@@ -138,21 +146,37 @@ gulp.task('dist', ['vendors', 'assets', 'styles-dist', 'scripts-dist'], function
 });
 
 /**
- * Static file server
+ * Server coffeescript
  */
-gulp.task('statics', g.serve({
-  port: 3000,
-  root: ['./.tmp', './.tmp/src/app', './src/app', './bower_components']
-}));
+gulp.task('server-coffee', function() {
+  gulp.src('./src/server/**/*.coffee')
+    .pipe(g.coffee())
+    .pipe(gulp.dest('./.tmp'));
+});
+
+/**
+ * nodemon
+ */
+gulp.task('nodemon', ['server-coffee'], function() {
+  g.nodemon({
+    script: './.tmp/index.js',
+    ignore: ['./.tmp/public'],
+    watch: ['./.tmp/']
+  })
+    .on('restart', function() {
+      console.log('restarted!');
+    });
+});
 
 /**
  * Watch
  */
 gulp.task('serve', ['watch']);
-gulp.task('watch', ['statics', 'default'], function () {
+gulp.task('watch', ['nodemon', 'default'], function () {
   isWatching = true;
   // Initiate livereload server:
   g.livereload();
+  gulp.watch('./src/server/**/*.coffee', ['server-coffee']);
   gulp.watch('./src/app/**/*.coffee', ['jshint']).on('change', function (evt) {
     if (evt.type !== 'changed') {
       gulp.start('index');
@@ -213,7 +237,7 @@ function testFiles() {
     .queue(g.bowerFiles().pipe(g.filter('**/*.js')))
     .queue(gulp.src('./bower_components/angular-mocks/angular-mocks.js'))
     .queue(appFiles())
-    .queue(gulp.src(['./src/app/**/*_test.js', './.tmp/src/app/**/*_test.js']))
+    .queue(gulp.src(['./src/app/**/*_test.js', './.tmp/public/src/app/**/*_test.js']))
     .done();
 }
 
@@ -221,14 +245,14 @@ function testFiles() {
  * All Js files as a stream
  */
 function jsFiles(opt) {
-  return gulp.src('./.tmp/src/app/**/*.js', opt);
+  return gulp.src('./.tmp/**/*.js', opt);
 }
 
 /**
  * All CSS files as a stream
  */
 function cssFiles (opt) {
-  return gulp.src('./.tmp/css/**/*.css', opt);
+  return gulp.src('./.tmp/public/css/**/*.css', opt);
 }
 
 /**
@@ -236,9 +260,9 @@ function cssFiles (opt) {
  */
 function appFiles () {
   var files = [
-    './.tmp/' + bower.name + '-templates.js',
-    './.tmp/src/app/**/*.js',
-    '!./.tmp/src/app/**/*_test.js',
+    './.tmp/public/' + bower.name + '-templates.js',
+    './.tmp/public/src/app/**/*.js',
+    '!./.tmp/public/src/app/**/*_test.js',
     './src/app/**/*.js',
     '!./src/app/**/*_test.js'
   ];
@@ -266,7 +290,7 @@ function buildTemplates () {
       stripPrefix: '/src/app'
     })
     .pipe(g.concat, bower.name + '-templates.js')
-    .pipe(gulp.dest, './.tmp')
+    .pipe(gulp.dest, './.tmp/public')
     .pipe(livereload)();
 }
 
