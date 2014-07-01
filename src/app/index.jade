@@ -10,7 +10,7 @@ html(ng-app="gitStars")
     <link rel="stylesheet" href="/css/app.css">
     // endinject
   body(ng-controller="rootCtrl")
-    .row(ng-include="'/views/login.html'")
+    .row(ng-include="pageUrl")
     // inject:vendor:js
     <script src="/angular/angular.js"></script>
     <script src="/angular-route/angular-route.js"></script>
