@@ -1,23 +1,45 @@
 "use strict"
 _ = require 'underscore'
 express = require 'express'
+session = require 'express-session'
+util = require './lib/util'
 app = express()
 
-GitHubApi = require 'github'
+app.use(express.static("#{__dirname}/public"))
+app.use(express.static("#{__dirname}/../bower_components"))
 
-github = new GitHubApi
-  version: '3.0.0',
-  debug: true
+app.use(session({ secret: 'keyboard cat' }))
 
-app.use(express.static("#{__dirname}/public"));
-app.use(express.static("#{__dirname}/../bower_components"));
+restrict = (req, res, next) ->
+  console.log(req.session)
+  if req.session.user
+    next()
+  else
+    res.redirect '/loginRequire'
 
-app.get '/user', (req, response) ->
+login = (req, token, cb) ->
+  req.session.regenerate (err) ->
+    req.session.user = token
+    cb()
+
+app.get '/loginRequire', (req, res) ->
+  res.send('["Login Require!"]')
+
+app.get '/callback', (req, res) ->
+  util.requireToken req.query.code, (result) ->
+    login req, result.access_token, () ->
+      res.redirect('/')
+
+app.get '/user', restrict, (req, response) ->
+  token = req.session.user
+  github = util.generateGitHubClient token
   github.user.getFrom {user: 'wcp1231'}, (err, res) ->
     response.send _.pick(res, 'id', 'avatar_url', 'html_url', 'name', 'login')
 
 
-app.get '/repo', (req, response) ->
+app.get '/repo', restrict, (req, response) ->
+  token = req.session.user
+  github = util.generateGitHubClient token
   github.repos.getStarredFromUser {user: 'wcp1231'}, (err, res) ->
     response.send _.map(res, (item) ->
       _.pick(item, 'id', 'full_name', 'description', 'html_url')
