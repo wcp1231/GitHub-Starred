@@ -10,27 +10,7 @@ html(ng-app="gitStars")
     <link rel="stylesheet" href="/css/app.css">
     // endinject
   body(ng-controller="rootCtrl")
-    .row
-      .col-md-2.aside
-        .vcard
-          a.vcard-avatar(href="#")
-            img.img-rounded(src="{{ user.avatar }}", height="230", width="230")
-          h1.vcard-names
-            span.vcard-fullname {{ user.fullname }}
-            span.vcard-username {{ user.username }}
-      .col-md-3.middle
-        .sort-bar
-        ul.repo-list
-          li.repo.source(ng-repeat="repo in repos")
-            span.mega-octicon.octicon-repo
-            h3
-              a(href="{{ repo.html_url }}") {{ repo.full_name }}
-            span.sort-info
-              = " Starred "
-              time xxxxx?
-            p.description {{ repo.description }}
-      .col-md-7.main
-        = "{{repo}}"
+    .row(ng-include="'/views/home.html'")
     // inject:vendor:js
     <script src="/angular/angular.js"></script>
     <script src="/angular-route/angular-route.js"></script>
