@@ -16,16 +16,16 @@ module.exports.setup = () ->
       throw err
     r.dbCreate(dbConfig.db).run connection, (err, result) ->
       if err
-        logdebug "[DEBUG] RethinkDB database '%s' already exists (%s:%s)\n%s", dbConfig.db, err.name, err.msg, err.message
+        logdebug '[DEBUG] RethinkDB database "%s" already exists (%s:%s)\n%s', dbConfig.db, err.name, err.msg, err.message
       else
-        logdebug "[INFO ] RethinkDB database '%s' created", dbConfig.db
+        logdebug '[INFO ] RethinkDB database "%s" created', dbConfig.db
       for tb, _id of dbConfig.tables
         `(function (tableName) {
             r.db(dbConfig.db).tableCreate(tableName, {primaryKey: _id}).run(connection, function(err, result) {
               if(err) {
-                logdebug("[DEBUG] RethinkDB table '%s' already exists (%s:%s)\n%s", tableName, err.name, err.msg, err.message);
+                logdebug('[DEBUG] RethinkDB table "%s" already exists (%s:%s)\n%s', tableName, err.name, err.msg, err.message);
               } else {
-                logdebug("[INFO ] RethinkDB table '%s' created", tableName);
+                logdebug('[INFO ] RethinkDB table "%s" created', tableName);
               }
             });
           })(tb)
