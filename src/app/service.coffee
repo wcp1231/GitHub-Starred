@@ -10,3 +10,8 @@ angular.module("Service", ["ngResource"]).
         method: "PUT"
       "remove":
         method: "DELETE"
+
+  .factory 'User', ($resource) ->
+    $resource '/user/:Id', { Id: "@Id"},
+      'get':
+        method: 'GET'

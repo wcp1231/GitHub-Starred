@@ -1,10 +1,10 @@
 .col-md-2.aside
   .vcard
-    a.vcard-avatar(href="#")
-      img.img-rounded(src="{{ user.avatar }}", height="230", width="230")
+    a.vcard-avatar(href="{{ user.html_url }}")
+      img.img-rounded(src="{{ user.avatar_url }}", height="230", width="230")
     h1.vcard-names
-      span.vcard-fullname {{ user.fullname }}
-      span.vcard-username {{ user.username }}
+      span.vcard-fullname {{ user.name }}
+      span.vcard-username {{ user.login }}
 .col-md-3.middle
   .sort-bar
   ul.repo-list
@@ -12,9 +12,6 @@
       span.mega-octicon.octicon-repo
       h3
         a(href="{{ repo.html_url }}") {{ repo.full_name }}
-      span.sort-info
-        = " Starred "
-        time xxxxx?
       p.description {{ repo.description }}
 .col-md-7.main
   = "{{repo}}"

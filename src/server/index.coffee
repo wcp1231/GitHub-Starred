@@ -11,7 +11,6 @@ app.use(express.static("#{__dirname}/../bower_components"))
 app.use(session({ secret: 'keyboard cat' }))
 
 restrict = (req, res, next) ->
-  console.log(req.session)
   if req.session.user
     next()
   else
@@ -23,7 +22,7 @@ login = (req, token, cb) ->
     cb()
 
 app.get '/loginRequire', (req, res) ->
-  res.send('["Login Require!"]')
+  res.send('{"msg": "Login Require!"}')
 
 app.get '/callback', (req, res) ->
   util.requireToken req.query.code, (result) ->
