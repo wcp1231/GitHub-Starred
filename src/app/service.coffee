@@ -16,3 +16,6 @@ angular.module('Service', ['ngResource'])
     $resource '/user/:Id', { Id: '@Id'},
       'get':
         method: 'GET'
+      'auth':
+        method: 'GET',
+        url: 'auth'

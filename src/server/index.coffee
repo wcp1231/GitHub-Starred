@@ -30,6 +30,12 @@ app.get '/callback', (req, res) ->
     login req, result.access_token, () ->
       res.redirect('/')
 
+app.get '/auth', (req, res) ->
+  if req.session.user
+    res.send '{"msg": "login", "code": 0}'
+  else
+    res.send '{"msg": "not login", "code": 1}'
+
 app.get '/user', restrict, (req, response) ->
   token = req.session.user
   github = util.generateGitHubClient token
