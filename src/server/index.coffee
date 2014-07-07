@@ -1,11 +1,12 @@
 'use strict'
 _ = require 'underscore'
 express = require 'express'
+path = require "path"
 session = require 'express-session'
 util = require './lib/util'
 app = express()
 
-app.use(express.static('#{__dirname}/public'))
+app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static('#{__dirname}/../bower_components'))
 
 app.use(session({ secret: 'keyboard cat' }))
