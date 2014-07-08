@@ -1,8 +1,8 @@
 'use strict'
-angular.module('gitStars', [
+angular.module('GitHubStarred', [
   'ngRoute'
   'ngResource'
   'angular-loading-bar'
-  'gitStars-templates'
+  'GitHubStarred-templates'
   'controllers'
 ])
