@@ -1,5 +1,7 @@
-gstars
+GitHub Starred
 ============
+
+GitHub Starred Manager
 
 ## Development
 
