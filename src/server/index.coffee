@@ -4,6 +4,9 @@ express = require 'express'
 path = require "path"
 session = require 'express-session'
 util = require './lib/util'
+db = require './lib/db'
+logdebug = require('debug')('http:debug')
+logerror = require('debug')('http:error')
 app = express()
 
 app.use(express.static(path.join(__dirname, 'public')))
@@ -17,18 +20,26 @@ restrict = (req, res, next) ->
   else
     res.redirect '/loginRequire'
 
-login = (req, token, cb) ->
-  req.session.regenerate (err) ->
-    req.session.user = token
-    cb()
+login = (req, res, token) ->
+  github = util.generateGitHubClient token
+  github.user.get {}, (err, result) ->
+    req.session.regenerate (err) ->
+      user = _.pick result, 'id', 'avatar_url', 'html_url', 'name', 'login'
+      db.saveUser user, (err, success) ->
+        logdebug '[DEBUG][saveUser] %s', success
+        if err
+          logerror '[ERROR][saveUser] %s:%s:\n%s', err.name, err.msg, err.message
+        else if success
+          req.session.user = user.login
+          req.session.token = token
+        res.redirect '/'
 
 app.get '/loginRequire', (req, res) ->
   res.send('{"msg": "Login Require!"}')
 
 app.get '/callback', (req, res) ->
   util.requireToken req.query.code, (result) ->
-    login req, result.access_token, () ->
-      res.redirect('/')
+    login req, res, result.access_token
 
 app.get '/auth', (req, res) ->
   if req.session.user
@@ -36,17 +47,16 @@ app.get '/auth', (req, res) ->
   else
     res.send '{"msg": "not login", "code": 1}'
 
-app.get '/user', restrict, (req, response) ->
-  token = req.session.user
-  github = util.generateGitHubClient token
-  github.user.getFrom {user: 'wcp1231'}, (err, res) ->
-    response.send _.pick(res, 'id', 'avatar_url', 'html_url', 'name', 'login')
-
+app.get '/user', restrict, (req, res) ->
+  name = req.session.user
+  db.findUserByName name, (err, result) ->
+    res.send result
 
 app.get '/repo', restrict, (req, response) ->
-  token = req.session.user
+  token = req.session.token
+  username = req.session.user
   github = util.generateGitHubClient token
-  github.repos.getStarredFromUser {user: 'wcp1231'}, (err, res) ->
+  github.repos.getStarredFromUser {user: username}, (err, res) ->
     response.send _.map(res, (item) ->
       _.pick(item, 'id', 'full_name', 'description', 'html_url')
     )
