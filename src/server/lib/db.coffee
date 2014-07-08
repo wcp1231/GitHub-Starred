@@ -1,6 +1,7 @@
 'use strict'
 r = require 'rethinkdb'
 logdebug = require('debug')('rdb:debug')
+logerror = require('debug')('rdb:error')
 
 dbConfig =
   host: process.env.RDB_HOST || 'localhost'
@@ -31,10 +32,46 @@ module.exports.setup = () ->
           })(tb)
         `
 
+module.exports.findUserByName = (name, callback) ->
+  onConnect (err, connection) ->
+    r.db(dbConfig.db).table('users').filter({ 'login': name }).run connection, (err, cursor) ->
+      if err
+        logerror '[ERROR][%s][findUserByName][collect] %s:%s\n%s', connection['_id'], err.name, err.msg, err.message
+        callback err
+      else
+        cursor.next (err, row) ->
+          if err
+            logerror '[ERROR][%s][findUserByEmail][collect] %s:%s\n%s', connection['_id'], err.name, err.msg, err.message
+            callback err
+          else
+            callback null, row
+          connection.close()
+
+module.exports.saveUser = (user, callback) ->
+  onConnect (err, connection) ->
+    userTable = r.db(dbConfig.db).table('users')
+    userTable.insert(user).run connection, (err, result) ->
+      if err
+        logerror '[ERROR][%s][saveUser] %s:%s\n%s', connection['_id'], err.name, err.msg, err.message
+        callback err
+        connection.close()
+      else if result.inserted == 1
+        callback null, true
+        connection.close()
+      else
+        userTable.get(user.id).update(user).run connection, (err, result) ->
+          if err
+            logerror '[ERROR][%s][updateUser] %s:%s\n%s', connection['_id'], err.name, err.msg, err.message
+            callback err
+          else if result.errors > 0
+            logdebug '[DEBUG][%s][updateUser] number of errors: %s', connection['_id'], result.errors
+            callback null, false
+          else
+            callback null, true
+          connection.close()
+
 module.exports.connectTest = () ->
   onConnect (err, connection) ->
-    if err
-      throw err
     console.log('connect!')
     connection.close()
 
