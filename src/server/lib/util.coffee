@@ -2,6 +2,7 @@
 GitHubApi = require 'github'
 https = require 'https'
 querystring = require 'querystring'
+config = require '../config'
 
 exports.generateGitHubClient = (token) ->
   github = new GitHubApi
@@ -14,8 +15,8 @@ exports.generateGitHubClient = (token) ->
 
 exports.requireToken = (code, cb) ->
   postData = querystring.stringify
-    client_id: '71ace902e2fd52547831'
-    client_secret: '62dab9eddf0e0c83cf5e05b779fc13673d516ccd'
+    client_id: config.client_id
+    client_secret: config.client_secret
     code: code
 
   options =
