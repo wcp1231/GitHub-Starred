@@ -162,7 +162,7 @@ gulp.task('nodemon', ['server-coffee'], function() {
     script: './.tmp/index.js',
     ignore: ['./.tmp/public'],
     watch: ['./.tmp/'],
-    env: { 'DEBUG': 'http:*,rdb:*' }
+    env: { 'DEBUG': 'http:*,rdb:*,util:*' }
   })
     .on('restart', function() {
       console.log('restarted!');
