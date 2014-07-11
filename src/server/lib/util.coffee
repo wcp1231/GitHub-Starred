@@ -43,6 +43,7 @@ module.exports.requireToken = (code, cb) ->
   req.end()
 
 module.exports.getAllStarredRepos = (github, callback) ->
+  logdebug '[INFO] getAllStarred'
   result = []
   nextPage = (link) ->
     if github.hasNextPage link
