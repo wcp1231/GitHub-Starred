@@ -30,8 +30,10 @@ login = (req, res, token) ->
         if err
           logerror '[ERROR][saveUser] %s:%s:\n%s', err.name, err.msg, err.message
         else if success
+          req.session.userId = user.id
           req.session.user = user.login
           req.session.token = token
+          req.session.updated = false
         res.redirect '/'
 
 app.get '/loginRequire', (req, res) ->
@@ -52,13 +54,25 @@ app.get '/user', restrict, (req, res) ->
   db.findUserByName name, (err, result) ->
     res.send result
 
-app.get '/repo', restrict, (req, response) ->
+app.get '/repo', restrict, (req, res) ->
+  userId = req.session.userId
+  db.getUserStarred userId, (err, repos) ->
+    res.send repos
+
+app.get '/updateRepos', restrict, (req, res) ->
+  if req.session.updated
+    res.send []
   token = req.session.token
   username = req.session.user
   github = util.generateGitHubClient token
-  github.repos.getStarredFromUser {user: username}, (err, res) ->
-    response.send _.map(res, (item) ->
-      _.pick(item, 'id', 'full_name', 'description', 'html_url')
-    )
+  util.getAllStarredRepos github, (err, repos) ->
+    if err
+      res.send '[]'
+    else
+      db.findUserByName username, (err, user) ->
+        util.updateRepos user, repos, () ->
+          logdebug '[INFO] update repos finish'
+          req.session.updated = true
+          res.send repos
 
 app.listen 3000
