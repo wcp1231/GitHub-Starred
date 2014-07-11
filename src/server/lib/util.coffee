@@ -8,7 +8,7 @@ config = require '../config'
 logdebug = require('debug')('util:debug')
 logerror = require('debug')('htil:error')
 
-exports.generateGitHubClient = (token) ->
+module.exports.generateGitHubClient = (token) ->
   github = new GitHubApi
     version: '3.0.0',
     debug: false
@@ -17,7 +17,7 @@ exports.generateGitHubClient = (token) ->
     token: token
   github
 
-exports.requireToken = (code, cb) ->
+module.exports.requireToken = (code, cb) ->
   postData = querystring.stringify
     client_id: config.client_id
     client_secret: config.client_secret
@@ -42,7 +42,7 @@ exports.requireToken = (code, cb) ->
   req.write postData
   req.end()
 
-exports.getAllStarredRepos = (github, callback) ->
+module.exports.getAllStarredRepos = (github, callback) ->
   result = []
   nextPage = (link) ->
     if github.hasNextPage link
