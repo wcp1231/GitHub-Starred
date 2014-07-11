@@ -1,4 +1,5 @@
 'use strict'
+_ = require 'underscore'
 r = require 'rethinkdb'
 logdebug = require('debug')('rdb:debug')
 logerror = require('debug')('rdb:error')
@@ -69,6 +70,32 @@ module.exports.saveUser = (user, callback) ->
           else
             callback null, true
           connection.close()
+
+module.exports.saveRepos = (repos, callback) ->
+  onConnect (err, connection) ->
+    repoTable = r.db(dbConfig.db).table('repos')
+    repos.forEach (repo, index) ->
+      repoTable.get(repo.id).replace(repo).run connection, (err, res) ->
+        if err
+          logerror '[ERROR][%s][saveRepo] %s:%s\n%s', connection['_id'], err.name, err.msg, err.message
+          callbace err
+    callback null
+
+module.exports.getUserStarred = (userId, callback) ->
+  onConnect (err, conn) ->
+    reposTable = r.db(dbConfig.db).table('repos')
+    r.db(dbConfig.db).table('users').get(userId)('starred').run conn, (err, result) ->
+      if err
+        logerror '[ERROR][%s][getUserStarred] %s:%s\n%s', conn['_id'], err.name, err.msg, err.message
+        callback err
+      else
+        reposId = `_.map(result, function(o) { return o.id });`
+        reposTable.getAll.apply(reposTable, reposId).run conn, (err, repos) ->
+          if err
+            logerror '[ERROR][%s][getStarredRepo] %s:%s\n%s', conn['_id'], err.name, err.msg, err.message
+            callback err
+          else
+            callback null, repos
 
 module.exports.connectTest = () ->
   onConnect (err, connection) ->
