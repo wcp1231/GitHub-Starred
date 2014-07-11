@@ -11,6 +11,10 @@ angular.module('Service', ['ngResource'])
         method: 'PUT'
       'remove':
         method: 'DELETE'
+      'updateRepos':
+        method: 'GET'
+        isArray: true
+        url: 'updateRepos'
 
   .factory 'User', ($resource) ->
     $resource '/user/:Id', { Id: '@Id'},

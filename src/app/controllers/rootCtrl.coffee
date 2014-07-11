@@ -10,6 +10,9 @@ angular.module 'controllers', ['Service']
         $scope.user = result
       Repo.query().$promise.then (repos) ->
         $scope.repos = repos
+      Repo.updateRepos().$promise.then (repos) ->
+        if repos.length > 0
+          $scope.repos = repos
 
   null
 ]
