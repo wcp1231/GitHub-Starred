@@ -11,7 +11,7 @@ logerror = require('debug')('htil:error')
 exports.generateGitHubClient = (token) ->
   github = new GitHubApi
     version: '3.0.0',
-    debug: true
+    debug: false
   github.authenticate
     type: 'oauth'
     token: token
