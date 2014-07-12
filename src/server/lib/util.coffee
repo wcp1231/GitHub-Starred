@@ -68,12 +68,15 @@ module.exports.getAllStarredRepos = (github, callback) ->
     nextPage res
 
 module.exports.updateRepos = (user, repos, callback) ->
-  allReposId = _.pluck repos, 'id'
-  userStarredId = _.pluck user.starred, 'id'
-  deletedId = _.difference userStarredId, allReposId
-  newId = _.difference allReposId, userStarredId
-  user.starred = _.reject user.starred, (r) ->
-    _.contains deletedId, r.id
-  user.starred = _.map(newId, (id) -> { id: id }).concat user.starred
-  db.saveUser user, () -> {}
-  db.saveRepos repos, callback
+  db.getUserStarred user.id, (err, starred) ->
+    allReposId = _.pluck repos, 'id'
+    starredId = _.pluck starred, 'id'
+    deletedId = _.difference starredId, allReposId
+    newId = _.difference allReposId, starredId
+    db.insertRelationship user.id, newId, (err, result) ->
+      logdebug '[INFO] insert relation %s', result.inserted
+    db.deleteRelationship user.id, deletedId, (err, result) ->
+      logdebug '[INFO] delete relation %s', result.deleted
+    db.saveRepos repos, () ->
+      db.getUserStarred user.id, (err, repos) ->
+        callback repos
