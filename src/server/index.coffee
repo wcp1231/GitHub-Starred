@@ -57,11 +57,12 @@ app.get '/user', restrict, (req, res) ->
 app.get '/repo', restrict, (req, res) ->
   userId = req.session.userId
   db.getUserStarred userId, (err, repos) ->
-    res.send repos
+    res.send(repos || [])
 
 app.get '/updateRepos', restrict, (req, res) ->
   if req.session.updated
     res.send []
+    return
   token = req.session.token
   username = req.session.user
   github = util.generateGitHubClient token
@@ -70,9 +71,9 @@ app.get '/updateRepos', restrict, (req, res) ->
       res.send '[]'
     else
       db.findUserByName username, (err, user) ->
-        util.updateRepos user, repos, () ->
+        util.updateRepos user, repos, (starredRepos) ->
           logdebug '[INFO] update repos finish'
           req.session.updated = true
-          res.send repos
+          res.send starredRepos
 
 app.listen 3000
