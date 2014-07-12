@@ -70,7 +70,7 @@ module.exports.getAllStarredRepos = (github, callback) ->
 module.exports.updateRepos = (user, repos, callback) ->
   db.getUserStarred user.id, (err, starred) ->
     allReposId = _.pluck repos, 'id'
-    starredId = _.pluck starred, 'id'
+    starredId = _.pluck starred, 'repoId'
     deletedId = _.difference starredId, allReposId
     newId = _.difference allReposId, starredId
     db.insertRelationship user.id, newId, (err, result) ->
