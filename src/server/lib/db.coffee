@@ -90,6 +90,8 @@ module.exports.getUserStarred = (userId, callback) ->
     r.table('relationship')
       .filter({ userId: userId })
       .eqJoin('repoId', r.table('repos'))
+      .without({right: "id"})
+      .zip()
       .run conn, (err, cursor) ->
         if err
           logerror '[ERROR][%s][getUserStarred] %s:%s\n%s', conn['_id'], err.name, err.msg, err.message
