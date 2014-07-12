@@ -35,7 +35,7 @@ module.exports.setup = () ->
 
 module.exports.findUserByName = (name, callback) ->
   onConnect (err, connection) ->
-    r.db(dbConfig.db).table('users').filter({ 'login': name }).run connection, (err, cursor) ->
+    r.table('users').filter({ 'login': name }).run connection, (err, cursor) ->
       if err
         logerror '[ERROR][%s][findUserByName][collect] %s:%s\n%s', connection['_id'], err.name, err.msg, err.message
         callback err
@@ -50,7 +50,7 @@ module.exports.findUserByName = (name, callback) ->
 
 module.exports.saveUser = (user, callback) ->
   onConnect (err, connection) ->
-    userTable = r.db(dbConfig.db).table('users')
+    userTable = r.table('users')
     userTable.insert(user).run connection, (err, result) ->
       if err
         logerror '[ERROR][%s][saveUser] %s:%s\n%s', connection['_id'], err.name, err.msg, err.message
@@ -73,7 +73,7 @@ module.exports.saveUser = (user, callback) ->
 
 module.exports.saveRepos = (repos, callback) ->
   onConnect (err, connection) ->
-    repoTable = r.db(dbConfig.db).table('repos')
+    repoTable = r.table('repos')
     repos.forEach (repo, index) ->
       repoTable.get(repo.id).replace(repo).run connection, (err, res) ->
         if err
@@ -83,8 +83,8 @@ module.exports.saveRepos = (repos, callback) ->
 
 module.exports.getUserStarred = (userId, callback) ->
   onConnect (err, conn) ->
-    reposTable = r.db(dbConfig.db).table('repos')
-    r.db(dbConfig.db).table('users').get(userId)('starred').run conn, (err, result) ->
+    reposTable = r.table('repos')
+    r.table('users').get(userId)('starred').run conn, (err, result) ->
       if err
         logerror '[ERROR][%s][getUserStarred] %s:%s\n%s', conn['_id'], err.name, err.msg, err.message
         callback err
@@ -107,4 +107,5 @@ onConnect = (callback) ->
     if err
       throw err
     connection['_id'] = Math.floor Math.random() * 10001
+    connection.use dbConfig.db
     callback(err, connection)
