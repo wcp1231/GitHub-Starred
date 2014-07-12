@@ -110,7 +110,7 @@ module.exports.deleteRelationship = (userId, reposId, callback) ->
     relTable.getAll.apply(relTable, reposId).delete().run conn, (err, result) ->
       if err
         logerror '[ERROR][%s][deleteRelationship] %s:%s\n%s', conn['_id'], err.name, err.msg, err.message
-        callback err
+        callback err, {deleted: 0}
       else
         callback null, result
 
@@ -122,7 +122,7 @@ module.exports.insertRelationship = (userId, reposId, callback) ->
     r.table('relationship').insert(data).run conn, (err, result) ->
       if err
         logerror '[ERROR][%s][insertRelationship] %s:%s\n%s', conn['_id'], err.name, err.msg, err.massage
-        callback err
+        callback err, {inserted: 0}
       else
         callback null, result
 
