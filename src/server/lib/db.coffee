@@ -11,6 +11,7 @@ dbConfig =
   tables:
     'users': 'id'
     'repos': 'id'
+    'relationship': 'id'
 
 module.exports.setup = () ->
   r.connect {host: dbConfig.host, port: dbConfig.port}, (err, connection) ->
@@ -85,17 +86,31 @@ module.exports.getUserStarred = (userId, callback) ->
   onConnect (err, conn) ->
     reposTable = r.table('repos')
     r.table('users').get(userId)('starred').run conn, (err, result) ->
+module.exports.deleteRelationship = (userId, reposId, callback) ->
+  if reposId.length <= 0
+    callback null, {deleted: 0}
+    return
+  onConnect (err, conn) ->
+    relTable = r.table('relationship')
+    reposId.push { index: 'repoId' }
+    relTable.getAll.apply(relTable, reposId).delete().run conn, (err, result) ->
       if err
-        logerror '[ERROR][%s][getUserStarred] %s:%s\n%s', conn['_id'], err.name, err.msg, err.message
+        logerror '[ERROR][%s][deleteRelationship] %s:%s\n%s', conn['_id'], err.name, err.msg, err.message
         callback err
       else
-        reposId = `_.map(result, function(o) { return o.id });`
-        reposTable.getAll.apply(reposTable, reposId).run conn, (err, repos) ->
-          if err
-            logerror '[ERROR][%s][getStarredRepo] %s:%s\n%s', conn['_id'], err.name, err.msg, err.message
-            callback err
-          else
-            callback null, repos
+        callback null, result
+
+module.exports.insertRelationship = (userId, reposId, callback) ->
+  onConnect (err, conn) ->
+    data = _.map reposId, (id) ->
+      userId: userId
+      repoId: id
+    r.table('relationship').insert(data).run conn, (err, result) ->
+      if err
+        logerror '[ERROR][%s][insertRelationship] %s:%s\n%s', conn['_id'], err.name, err.msg, err.massage
+        callback err
+      else
+        callback null, result
 
 module.exports.connectTest = () ->
   onConnect (err, connection) ->
