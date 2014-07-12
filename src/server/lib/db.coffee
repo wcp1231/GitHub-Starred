@@ -84,8 +84,17 @@ module.exports.saveRepos = (repos, callback) ->
 
 module.exports.getUserStarred = (userId, callback) ->
   onConnect (err, conn) ->
-    reposTable = r.table('repos')
-    r.table('users').get(userId)('starred').run conn, (err, result) ->
+    r.table('relationship')
+      .filter({ userId: userId })
+      .eqJoin('repoId', r.table('repos'))
+      .run conn, (err, cursor) ->
+        if err
+          logerror '[ERROR][%s][getUserStarred] %s:%s\n%s', conn['_id'], err.name, err.msg, err.message
+          callback err
+        else
+          cursor.toArray (err, result) ->
+            callback null, result
+
 module.exports.deleteRelationship = (userId, reposId, callback) ->
   if reposId.length <= 0
     callback null, {deleted: 0}
