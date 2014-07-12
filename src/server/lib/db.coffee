@@ -33,6 +33,9 @@ module.exports.setup = () ->
             });
           })(tb)
         `
+      r.db(dbConfig.db).table('relationship').indexCreate('repoId').run connection, (err, result) ->
+        if err
+          logerror '[ERROR] create index error. %s:%s\n%s', err.name, err.msg, err.message
 
 module.exports.findUserByName = (name, callback) ->
   onConnect (err, connection) ->
