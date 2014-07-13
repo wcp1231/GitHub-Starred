@@ -2,6 +2,8 @@
 
 font-color = #999999
 small-font-color = font-color - 25%
+bar-height = 50px
+bgcolor = #2f2f2f
 
 .row {
   height 100%
@@ -14,7 +16,7 @@ small-font-color = font-color - 25%
   }
 
   .aside {
-    background: #2f2f2f
+    background: bgcolor
     color font-color
 
     .vcard {
@@ -49,7 +51,7 @@ small-font-color = font-color - 25%
       width 100%
 
       .list-group-item {
-        background #2f2f2f
+        background bgcolor
         color font-color
         font-size 15px
         border none
@@ -67,15 +69,15 @@ small-font-color = font-color - 25%
     .sort-bar {
       position fixed
       top 0
-      height 50px
+      height bar-height
       width 25%
-      background #2f2f2f
+      background bgcolor
       padding 8px
 
       input.seach {
         background rgba(255,255,255,0.1)
         border none
-        color #999
+        color #99999
       }
     }
 
@@ -99,7 +101,7 @@ small-font-color = font-color - 25%
         .sort-info {
           display inline-block
           font-size 11px
-          color #999
+          color font-color
         }
       }
     }
