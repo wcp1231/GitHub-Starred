@@ -1,6 +1,6 @@
 @import "styles/_base";
 
-font-color = #666
+font-color = #999999
 small-font-color = font-color - 25%
 
 .row {
@@ -8,12 +8,14 @@ small-font-color = font-color - 25%
   margin 0
 
   .aside, .middle, .main {
+    padding 0
     height 100%
     overflow-y scroll
   }
 
   .aside {
     background: #2f2f2f
+    color font-color
 
     .vcard {
       .vcard-avatar img {
@@ -23,15 +25,17 @@ small-font-color = font-color - 25%
       }
 
       .vcard-names {
+        margin-top 10px
+        padding 0 15px
         .vcard-fullname, .vcard-username {
           display block
         }
         .vcard-fullname {
-          font-size 26px
-          line-height 30px
+          font-size 15px
+          line-height 22px
         }
         .vcard-username {
-          font-size 20px
+          font-size 10px
           line-height 22px
           color small-font-color
         }
@@ -40,7 +44,7 @@ small-font-color = font-color - 25%
   }
 
   .middle {
-    padding 0
+    padding-top 50px
     border-right 1px solid #d9d9d9
 
     .repo-list {

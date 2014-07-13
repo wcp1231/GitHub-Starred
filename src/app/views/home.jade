@@ -1,7 +1,7 @@
-.col-md-2.aside
+.col-md-1.aside
   .vcard
     a.vcard-avatar(href="{{ user.html_url }}")
-      img.img-rounded(src="{{ user.avatar_url }}", height="230", width="230")
+      img.img-rounded(src="{{ user.avatar_url }}", height="100", width="100")
     h1.vcard-names
       span.vcard-fullname {{ user.name }}
       span.vcard-username {{ user.login }}
@@ -13,5 +13,5 @@
       h3
         a(href="{{ repo.html_url }}") {{ repo.full_name }}
       p.description {{ repo.description }}
-.col-md-7.main
+.col-md-8.main
   = "{{repo}}"
