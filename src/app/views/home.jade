@@ -16,7 +16,7 @@
   .sort-bar
     input.form-control.seach(type="text", placeholder="search")
   ul.repo-list
-    li.repo.source(ng-repeat="repo in repos")
+    li.repo.source(ng-repeat="repo in repos", ng-click="select($event, repo)", ng-class="{active: repo.selected}")
       span.mega-octicon.octicon-repo
       h3
         a(href="{{ repo.html_url }}") {{ repo.full_name }}
