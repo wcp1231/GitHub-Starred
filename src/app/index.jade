@@ -4,8 +4,8 @@ html(ng-app="GitHubStarred")
     meta(charset="utf-8")
     title GitHub Starred
     // inject:vendor:css
-    <link rel="stylesheet" href="/angular-loading-bar/src/loading-bar.css">
     <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/angular-loading-bar/src/loading-bar.css">
     // endinject
     // inject:css
     <link rel="stylesheet" href="/css/app.css">
@@ -13,12 +13,12 @@ html(ng-app="GitHubStarred")
   body(ng-controller="rootCtrl")
     .row(ng-include="pageUrl")
     // inject:vendor:js
+    <script src="/jquery/dist/jquery.js"></script>
     <script src="/angular/angular.js"></script>
     <script src="/angular-route/angular-route.js"></script>
     <script src="/angular-resource/angular-resource.js"></script>
-    <script src="/jquery/dist/jquery.js"></script>
-    <script src="/angular-loading-bar/src/loading-bar.js"></script>
     <script src="/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="/angular-loading-bar/src/loading-bar.js"></script>
     // endinject
     // inject:js
     <script src="/GitHubStarred-templates.js"></script>
