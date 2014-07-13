@@ -5,6 +5,13 @@
     h1.vcard-names
       span.vcard-fullname {{ user.name }}
       span.vcard-username {{ user.login }}
+  .list-group
+    a.list-group-item(href="#", ng-click="refresh()")
+      span.glyphicon.glyphicon-refresh
+      = " Refresh"
+    a.list-group-item(href="/logout")
+      span.glyphicon.glyphicon-log-out
+      = " Logout"
 .col-md-3.middle
   .sort-bar
     input.form-control.seach(type="text", placeholder="search")

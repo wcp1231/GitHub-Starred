@@ -43,6 +43,10 @@ app.get '/callback', (req, res) ->
   util.requireToken req.query.code, (result) ->
     login req, res, result.access_token
 
+app.get '/logout', (req, res) ->
+  req.session.destroy () ->
+    res.redirect '/'
+
 app.get '/auth', (req, res) ->
   if req.session.user
     res.send '{"msg": "login", "code": 0}'

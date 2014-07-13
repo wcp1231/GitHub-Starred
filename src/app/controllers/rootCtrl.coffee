@@ -14,5 +14,11 @@ angular.module 'controllers', ['Service']
         if repos.length > 0
           $scope.repos = repos
 
+  $scope.refresh = () ->
+    Repo.updateRepos().$promise.then (repos) ->
+      if repos.length > 0
+        $scope.repos = repos
+
+
   null
 ]
