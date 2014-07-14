@@ -45,6 +45,11 @@ module.exports.requireToken = (code, cb) ->
 module.exports.getAllStarredRepos = (github, callback) ->
   console.trace('call getAllStarred')
   result = []
+  pickData = (item) ->
+    item = _.pick item, 'id', 'name', 'description', 'html_url', 'owner'
+    item.owner = _.pick item.owner, 'login', 'html_url'
+    item
+
   nextPage = (link) ->
     if github.hasNextPage link
       logdebug '[DEBUG][getStarred] %s', link.meta.link
@@ -52,19 +57,16 @@ module.exports.getAllStarredRepos = (github, callback) ->
         if err
           logerror '[ERROR][getStarred] %s:%s\n%s', err.name, err.msg, err.message
           callback err, null
-        result = result.concat _.map(res, (item) ->
-          _.pick item, 'id', 'full_name', 'description', 'html_url'
-        )
+        result = result.concat _.map(res, pickData)
         nextPage res
     else
       callback null, result
+
   github.repos.getStarred {}, (err, res) ->
     if err
       logerror '[ERROR][getStarred] %s:%s\n%s', err.name, err.msg, err.message
       callback err, null
-    result = result.concat _.map(res, (item) ->
-      _.pick item, 'id', 'full_name', 'description', 'html_url'
-    )
+    result = result.concat _.map(res, pickData)
     nextPage res
 
 module.exports.updateRepos = (user, repos, callback) ->

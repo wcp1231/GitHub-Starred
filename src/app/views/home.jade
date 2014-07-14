@@ -19,7 +19,9 @@
     li.repo.source(ng-repeat="repo in repos", ng-click="select($event, repo)", ng-class="{active: repo.selected}")
       span.mega-octicon.octicon-repo
       h3
-        a(href="{{ repo.html_url }}") {{ repo.full_name }}
+        a(href="{{ repo.html_url }}")= '{{ repo.name }}'
+        small
+          = ' By '
+          a(href="{{ repo.owner.html_url }}") {{ repo.owner.login }}
       p.description {{ repo.description }}
 .col-md-8.main
-  = "{{repo}}"
