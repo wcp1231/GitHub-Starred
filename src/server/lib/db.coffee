@@ -1,6 +1,7 @@
 'use strict'
 _ = require 'underscore'
 r = require 'rethinkdb'
+moment = require 'moment'
 logdebug = require('debug')('rdb:debug')
 logerror = require('debug')('rdb:error')
 
@@ -74,6 +75,25 @@ module.exports.saveUser = (user, callback) ->
           else
             callback null, true
           connection.close()
+
+module.exports.getRepo = (id, callback) ->
+  onConnect (err, conn) ->
+    r.table('repos').get(id).run conn, (err, repo) ->
+      if err
+        logerror '[ERROR][%s][getRepo] %s:%s\n%s', conn['_id'], err.name, err.msg, err.message
+        callback err
+      else
+        callback null, repo
+
+module.exports.updateRepo = (repo, callback) ->
+  onConnect (err, conn) ->
+    repo.updateAt = moment().format 'YYYY-MM-DD'
+    r.table('repos').get(repo.id).update(repo).run conn, (err, res) ->
+      if err
+        logerror '[ERROR][%s][updateRepo] %s:%s\n%s', conn['_id'], err.name, err.msg, err.message
+        callback err
+      else
+        callback null, res
 
 module.exports.saveRepos = (repos, callback) ->
   onConnect (err, connection) ->
