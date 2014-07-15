@@ -82,3 +82,19 @@ module.exports.updateRepos = (user, repos, callback) ->
     db.saveRepos repos, () ->
       db.getUserStarred user.id, (err, repos) ->
         callback repos
+
+module.exports.getReadme = (github, repo, callback) ->
+  github.repos.getReadme
+    user: repo.owner.login
+    repo: repo.name
+    , (err, response) ->
+      source = (new Buffer response.content, 'base64').toString()
+      github.markdown.render
+        text: source
+        , (err, result) ->
+          repo.readme = result.data
+          db.updateRepo repo, (err, res) ->
+            if err
+              callback ''
+            else
+              callback repo.readme

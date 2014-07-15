@@ -3,6 +3,7 @@ _ = require 'underscore'
 express = require 'express'
 path = require "path"
 session = require 'express-session'
+moment = require 'moment'
 util = require './lib/util'
 db = require './lib/db'
 logdebug = require('debug')('http:debug')
@@ -79,5 +80,18 @@ app.get '/updateRepos', restrict, (req, res) ->
           logdebug '[INFO] update repos finish'
           req.session.updated = true
           res.send starredRepos
+
+app.get '/getReadme', restrict, (req, res) ->
+  repoId = parseInt req.query.id
+  db.getRepo repoId, (err, repo) ->
+    updateDate = moment(repo.updateAt || undefined)
+    now = moment()
+    if repo.readme and updateDate.add(1, 'd').isAfter(now)
+      res.send {readme: repo.readme}
+    else
+      token = req.session.token
+      github = util.generateGitHubClient token
+      util.getReadme github, repo, (readme) ->
+        res.send {readme: readme}
 
 app.listen 3000
