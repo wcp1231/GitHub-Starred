@@ -25,3 +25,9 @@
           a(href="{{ repo.owner.html_url }}") {{ repo.owner.login }}
       p.description {{ repo.description }}
 .col-md-8.main
+  .panel.panel-default
+    .panel-heading Label & Note
+    .panel-body
+  .panel.panel-default
+    .panel-heading READEME
+    .panel-body(ng-bind-html="selectedRepo.readme")

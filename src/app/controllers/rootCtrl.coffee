@@ -1,6 +1,6 @@
 'use strict'
 angular.module 'controllers', ['Service']
-.controller 'rootCtrl', ['$scope', '$filter', 'Repo', 'User', ($scope, $filter, Repo, User) ->
+.controller 'rootCtrl', ['$scope', '$filter', '$sce', 'Repo', 'User', ($scope, $filter, $sce, Repo, User) ->
   User.auth().$promise.then (result) ->
     if result.code == 1
       $scope.pageUrl = '/views/login.html'
@@ -24,6 +24,9 @@ angular.module 'controllers', ['Service']
     if prev
       prev.selected = false
     repo.selected = true
+    Repo.getReadme({id: repo.repoId}).$promise.then (res) ->
+      $scope.selectedRepo = repo
+      repo.readme = $sce.trustAsHtml res.readme
 
   null
 ]

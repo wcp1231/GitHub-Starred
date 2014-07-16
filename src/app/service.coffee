@@ -15,6 +15,9 @@ angular.module('Service', ['ngResource'])
         method: 'GET'
         isArray: true
         url: 'updateRepos'
+      'getReadme':
+        method: 'GET'
+        url: 'getReadme'
 
   .factory 'User', ($resource) ->
     $resource '/user/:Id', { Id: '@Id'},
