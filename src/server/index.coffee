@@ -10,7 +10,7 @@ logerror = require('debug')('http:error')
 app = express()
 
 app.use(express.static(path.join(__dirname, 'public')))
-app.use(express.static('#{__dirname}/../bower_components'))
+app.use(express.static("#{__dirname}/../bower_components"))
 
 app.use(session({ secret: 'keyboard cat' }))
 
