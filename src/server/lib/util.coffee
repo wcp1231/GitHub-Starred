@@ -46,7 +46,7 @@ module.exports.getAllStarredRepos = (github, callback) ->
   console.trace('call getAllStarred')
   result = []
   pickData = (item) ->
-    item = _.pick item, 'id', 'name', 'description', 'html_url', 'owner'
+    item = _.pick item, 'id', 'name', 'description', 'html_url', 'owner', 'language'
     item.owner = _.pick item.owner, 'login', 'html_url'
     item
 
