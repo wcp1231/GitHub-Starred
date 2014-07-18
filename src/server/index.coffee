@@ -4,6 +4,7 @@ express = require 'express'
 path = require "path"
 session = require 'express-session'
 moment = require 'moment'
+bodyParser = require 'body-parser'
 util = require './lib/util'
 db = require './lib/db'
 logdebug = require('debug')('http:debug')
@@ -12,6 +13,8 @@ app = express()
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static("#{__dirname}/../bower_components"))
+
+app.use(bodyParser.json())
 
 app.use(session({ secret: 'keyboard cat' }))
 
@@ -64,6 +67,14 @@ app.get '/repo', restrict, (req, res) ->
   db.getUserStarred userId, (err, repos) ->
     res.send(repos || [])
 
+app.put '/repo', restrict, (req, res) ->
+  repo = req.body
+  updateData = _.pick repo, 'id', 'note', 'tags'
+  db.saveNoteAndTags updateData, (err, result) ->
+    if err
+      res.send err
+    else
+      res.send '{"msg": "ok"}'
 app.get '/updateRepos', restrict, (req, res) ->
   if req.session.updated
     res.send []

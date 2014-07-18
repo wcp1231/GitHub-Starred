@@ -120,6 +120,18 @@ module.exports.getUserStarred = (userId, callback) ->
           cursor.toArray (err, result) ->
             callback null, result
 
+module.exports.saveNoteAndTags = (data, callback) ->
+  onConnect (err, conn) ->
+    r.table('relationship')
+      .get(data.id)
+      .update(data)
+      .run conn, (err, result) ->
+        if err
+          logerror '[ERROR][%s][saveNoteAndTags] %s:%s\n%s', conn['_id'], err.name, err.msg, err.message
+          callback err
+        else
+          callback null, result
+
 module.exports.deleteRelationship = (userId, reposId, callback) ->
   if reposId.length <= 0
     callback null, {deleted: 0}

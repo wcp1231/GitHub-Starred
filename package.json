@@ -13,7 +13,8 @@
     "rethinkdb": "~1.13.0-1",
     "debug": "~1.0.2",
     "express-session": "~1.6.1",
-    "moment": "~2.7.0"
+    "moment": "~2.7.0",
+    "body-parser": "~1.4.3"
   },
   "devDependencies": {
     "gulp": "^3.7.0",

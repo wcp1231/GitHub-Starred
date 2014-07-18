@@ -49,5 +49,10 @@ angular.module 'controllers', ['Service']
   $scope.selectTag = (type, value) ->
     $scope.filterObj[type] = value
 
+  $scope.saveNoteAndTags = () ->
+    repo = $scope.selectedRepo
+    Repo.save(repo).$promise.then (result) ->
+      console.log result
+
   null
 ]
