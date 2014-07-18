@@ -19,7 +19,7 @@
       = " Logout"
 .col-md-3.middle
   .sort-bar
-    input.form-control.seach(type="text", placeholder="search")
+    input.form-control.seach(type="text", placeholder="search", ng-model="search.name")
   ul.repo-list
     li.repo.source(ng-repeat="repo in repos | filter : filterObj : true", ng-click="select($event, repo)", ng-class="{active: repo.selected}")
       span.mega-octicon.octicon-repo
@@ -33,6 +33,10 @@
   .panel.panel-default
     .panel-heading Tag & Note
     .panel-body
+      .form-group
+        label Note
+        textarea.form-control(msd-elastic, ng-model="selectedRepo.note")
+      .pull-right.btn.btn-primary(ng-click="saveNoteAndTags()") Save
   .panel.panel-default
     .panel-heading READEME
     .panel-body(ng-bind-html="selectedRepo.readme")

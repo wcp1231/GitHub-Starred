@@ -5,4 +5,5 @@ angular.module('GitHubStarred', [
   'angular-loading-bar'
   'GitHubStarred-templates'
   'controllers'
+  'monospaced.elastic'
 ])
