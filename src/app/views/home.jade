@@ -5,7 +5,12 @@
     h1.vcard-names
       span.vcard-fullname {{ user.name }}
       span.vcard-username {{ user.login }}
-  .list-group
+  .panel.panel-default.filterlist
+    .panel-heading language
+    ul.list-group
+      li.list-group-item(ng-click="selectTag('language')") 全部 <span class="badge">{{ repos.length }}</span>
+      li.list-group-item(ng-repeat="l in langFilter", ng-click="selectTag('language', l[0])") {{ l[0] }} <span class="badge">{{ l[1] }}</span>
+  .list-group.operation
     a.list-group-item(href="#", ng-click="refresh()")
       span.glyphicon.glyphicon-refresh
       = " Refresh"
@@ -16,7 +21,7 @@
   .sort-bar
     input.form-control.seach(type="text", placeholder="search")
   ul.repo-list
-    li.repo.source(ng-repeat="repo in repos", ng-click="select($event, repo)", ng-class="{active: repo.selected}")
+    li.repo.source(ng-repeat="repo in repos | filter : filterObj : true", ng-click="select($event, repo)", ng-class="{active: repo.selected}")
       span.mega-octicon.octicon-repo
       h3
         a(href="{{ repo.html_url }}")= '{{ repo.name }}'
@@ -26,7 +31,7 @@
       p.description {{ repo.description }}
 .col-md-8.main
   .panel.panel-default
-    .panel-heading Label & Note
+    .panel-heading Tag & Note
     .panel-body
   .panel.panel-default
     .panel-heading READEME
