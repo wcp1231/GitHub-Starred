@@ -48,6 +48,8 @@ module.exports.getAllStarredRepos = (github, callback) ->
   pickData = (item) ->
     item = _.pick item, 'id', 'name', 'description', 'html_url', 'owner', 'language'
     item.owner = _.pick item.owner, 'login', 'html_url'
+    if not item['language']
+      item['language'] = 'Unknow'
     item
 
   nextPage = (link) ->
