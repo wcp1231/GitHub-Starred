@@ -21,7 +21,7 @@
   .sort-bar
     input.form-control.seach(type="text", placeholder="search", ng-model="search.name")
   ul.repo-list
-    li.repo.source(ng-repeat="repo in repos | filter : filterObj : true", ng-click="select($event, repo)", ng-class="{active: repo.selected}")
+    li.repo.source(ng-repeat="repo in repos | filter : filterObj : true | filter : search", ng-click="select($event, repo)", ng-class="{active: repo.selected}")
       span.mega-octicon.octicon-repo
       h3
         a(href="{{ repo.html_url }}")= '{{ repo.name }}'
